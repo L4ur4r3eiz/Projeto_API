@@ -179,7 +179,8 @@ def inicio():
     return {"mensagem": "API do estúdio de tatuagem funcionando!"}
 ```
 
-**Teste:** acesse `http://127.0.0.1:8000/docs` — deve aparecer o grupo de rotas `/senioridade`. O banco de exemplo já vem com "Júnior", "Pleno" e "Sênior" cadastrados; confira em `GET /senioridade`.
+**Teste:** acesse `http://127.0.0.1:8000/docs` — deve aparecer o grupo de rotas `                                                                                                                                                                                                                                         
+`. O banco de exemplo já vem com "Júnior", "Pleno" e "Sênior" cadastrados; confira em `GET /senioridade`.
 
 ---
 
