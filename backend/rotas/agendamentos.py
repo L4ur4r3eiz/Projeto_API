@@ -23,7 +23,7 @@ class Agendamento(BaseModel):
     valortatuagem: Optional[float] = None   # opcional
     status: Optional[str] = None            # só é usado ao atualizar (ver Parte 7)
 
-    # POST /agendamentos — cadastra um novo agendamento
+   # POST /agendamentos — cadastra um novo agendamento
 @router.post("/agendamentos")
 def criar_agendamento(agendamento: Agendamento):
     conn = conectar()
@@ -34,11 +34,10 @@ def criar_agendamento(agendamento: Agendamento):
         (agendamento.idcliente, agendamento.idtatuador, agendamento.dataagendamento,
          agendamento.horaagendamento, agendamento.descricaotatuagem, agendamento.valortatuagem)
     )
-    # repare que a coluna status nem aparece aqui — o banco aplica sozinho
-    # o DEFAULT 'pendente' que já foi definido lá na Aula 2
+    novo_id = cursor.lastrowid   # o ID que o MySQL gerou sozinho pro novo agendamento (AUTO_INCREMENT)
     conn.commit()
     conn.close()
-    return {"mensagem": "Agendamento cadastrado com sucesso"}
+    return {"mensagem": "Agendamento cadastrado com sucesso", "idagendamento": novo_id}
 
 # GET /agendamentos — lista todos os agendamentos, já com nome do cliente e do tatuador
 @router.get("/agendamentos")
