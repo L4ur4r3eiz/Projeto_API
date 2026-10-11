@@ -81,3 +81,31 @@ def buscar_agendamento(id: int):
     agendamento["horaagendamento"] = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
 
     return agendamento
+
+# PUT /agendamentos/{id} — atualiza um agendamento existente
+@router.put("/agendamentos/{id}")
+def atualizar_agendamento(id: int, agendamento: Agendamento):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        """UPDATE agendamento
+           SET idcliente=%s, idtatuador=%s, dataagendamento=%s, horaagendamento=%s,
+               descricaotatuagem=%s, valortatuagem=%s, status=%s
+           WHERE idagendamento=%s""",
+        (agendamento.idcliente, agendamento.idtatuador, agendamento.dataagendamento,
+         agendamento.horaagendamento, agendamento.descricaotatuagem,
+         agendamento.valortatuagem, agendamento.status, id)
+    )
+    conn.commit()
+    conn.close()
+    return {"mensagem": "Agendamento atualizado com sucesso"}
+
+# DELETE /agendamentos/{id} — deleta um agendamento
+@router.delete("/agendamentos/{id}")
+def deletar_agendamento(id: int):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM agendamento WHERE idagendamento = %s", (id,))
+    conn.commit()
+    conn.close()
+    return {"mensagem": "Agendamento deletado com sucesso"}
