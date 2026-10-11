@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from rotas import clientes, senioridade   # ← adiciona senioridade aqui
+from rotas import clientes, senioridade, tatuadores   # ← adiciona tatuadores aqui
 
 app = FastAPI()
 
@@ -12,9 +12,14 @@ app.add_middleware(
 )
 
 app.include_router(clientes.router)
-app.include_router(senioridade.router)   # ← registra a nova rota
+app.include_router(senioridade.router)
+app.include_router(tatuadores.router)   # ← registra a nova rota
 
 
 @app.get("/")
 def inicio():
     return {"mensagem": "API do estúdio de tatuagem funcionando!"}
+
+from rotas import clientes, senioridade, tatuadores, agendamentos   # ← adiciona agendamentos aqui
+...
+app.include_router(agendamentos.router)
