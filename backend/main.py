@@ -2,8 +2,9 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles   # ← novo: serve arquivos estáticos (as imagens enviadas)
 from fastapi.middleware.cors import CORSMiddleware
 from rotas import clientes, senioridade, tatuadores, agendamentos
+from rotas import clientes, senioridade, tatuadores, agendamentos, estilos  
 import os   # ← novo: pra criar a pasta de uploads se ela não existir
-
+ 
 app = FastAPI()
 
 app.add_middleware(
@@ -20,6 +21,7 @@ app.include_router(clientes.router)
 app.include_router(senioridade.router)
 app.include_router(tatuadores.router)
 app.include_router(agendamentos.router)
+app.include_router(estilos.router) # ← registra a nova rota
 
 
 @app.get("/")
