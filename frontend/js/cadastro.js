@@ -1,4 +1,5 @@
 const API = 'http://127.0.0.1:8000'
+protegerPagina()   // bloqueia a página se não tiver login
 const formCadastro = document.getElementById('form-cadastro')
 
 formCadastro.addEventListener('submit', async (e) => {

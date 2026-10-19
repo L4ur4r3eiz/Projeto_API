@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles  # serve arquivos estáticos (como i
 from fastapi.middleware.cors import CORSMiddleware
 from rotas import clientes, senioridade, tatuadores, agendamentos, estilos, usuarios, login
 from seguranca import verificar_token  
+from seguranca import verificar_token, verificar_admin
 
 app = FastAPI()
 
@@ -21,7 +22,7 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # serve
 
 # ─── Registro das Rotas ───
 app.include_router(login.router, tags=["Login"])
-app.include_router(usuarios.router, prefix="/usuarios", tags=["Usuários"])
+app.include_router(usuarios.router, prefix="/usuarios", tags=["Usuários"], dependencies=[Depends(verificar_admin)])
 app.include_router(clientes.router, prefix="/clientes", tags=["Clientes"], dependencies=[Depends(verificar_token)])
 app.include_router(senioridade.router, prefix="/senioridade", tags=["Senioridade"], dependencies=[Depends(verificar_token)])
 app.include_router(estilos.router, prefix="/estilos", tags=["Estilos"], dependencies=[Depends(verificar_token)])
