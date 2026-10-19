@@ -10,7 +10,7 @@ formCadastro.addEventListener('submit', async (e) => {
     senha: document.getElementById('senha').value
   }
 
-  const resposta = await fetch(`${API}/usuarios`, {
+  const resposta = await fetchAutenticado(`${API}/usuarios`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(usuario)
