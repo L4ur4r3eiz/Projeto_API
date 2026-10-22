@@ -4,7 +4,7 @@
 #            (o "crachá digital") se estiverem corretos.
 # ============================================================
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from database import conectar
@@ -33,13 +33,13 @@ def login(dados: Login):
 
     # se o e-mail não existir, nem vale a pena conferir senha nenhuma
     if not usuario:
-        return {"erro": "E-mail ou senha inválidos"}
+        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
 
     # confere a senha digitada com o hash guardado no banco (mesma lógica do "triturador" da Aula 12)
     senha_confere = bcrypt.checkpw(dados.senha.encode("utf-8"), usuario["senha"].encode("utf-8"))
 
     if not senha_confere:
-        return {"erro": "E-mail ou senha inválidos"}
+        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
         # repare que a mensagem é igual, tanto pra "e-mail não existe" quanto pra "senha errada" —
         # de propósito, pra não dar pista de qual das duas coisas a pessoa errou
 

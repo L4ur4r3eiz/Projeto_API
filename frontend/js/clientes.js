@@ -28,7 +28,7 @@ async function listarClientes() {
         <td>${c.cidade ?? '-'}</td>
         <td>${c.uf ?? '-'}</td>
         <td>
-          <button class="btn btn-sm btn-warning me-2" onclick='preencherFormularioEdicao(${JSON.stringify(c)})'>Editar</button>
+          <button class="btn btn-sm btn-warning me-2" onclick='preencherFormularioEdicao(${JSON.stringify(c)})'>Editar</button> 
           <button class="btn btn-sm btn-danger" onclick="deletarCliente(${c.idcliente})">Excluir</button>
         </td>
       </tr>`

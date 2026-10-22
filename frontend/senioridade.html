@@ -2,66 +2,143 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Senioridade — Estúdio de Tatuagem</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    
+    <!-- Tipografia Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Global do Projeto -->
+    <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="container py-4">
-    <nav class="navbar navbar-dark bg-dark mb-4">
-      <div class="container">
-        <span class="navbar-brand">Estúdio de Tatuagem</span>
-        <div>
-          <a href="clientes.html" class="text-light me-3">Clientes</a>
-          <a href="senioridade.html" class="text-light me-3">Senioridade</a>
-          <a href="estilos.html" class="text-light me-3">Estilos</a>
-          <a href="tatuadores.html" class="text-light me-3">Tatuadores</a>
-          <a href="agendamentos.html" class="text-light me-3">Agendamentos</a>
-          <button onclick="sair()" class="btn btn-outline-light btn-sm">
-            Sair
-          </button>
+  <body>
+
+    <!-- Header Flutuante Minimalista (Single-Layer Glassmorphism) -->
+    <header class="navbar-wrapper">
+      <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand" aria-label="Home">
+          <svg class="brand-symbol" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="3" width="3" height="6" rx="1"/>
+            <rect x="11" y="3" width="3" height="6" rx="1"/>
+            <path d="M8 5h3m3 0h4v3h-4M5 9h10l4 3-5 4-4-4H5zM8 12l-3 5h4l3-4M5 17l-2 4M7 17l-1 4" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <button type="button" class="nav-toggle-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        
+        <div class="nav-links" id="nav-links">
+          <a href="clientes.html" class="nav-link">Clientes</a>
+          <a href="senioridade.html" class="nav-link active">Senioridade</a>
+          <a href="estilos.html" class="nav-link">Estilos</a>
+          <a href="tatuadores.html" class="nav-link">Tatuadores</a>
+          <a href="agendamentos.html" class="nav-link">Agendamentos</a>
+          <button type="button" onclick="abrirModalSair()" class="btn-logout">Sair</button>
+        </div>
+
+      </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-container">
+      <div class="page-header">
+        <h1>Senioridade</h1>
+        <p class="subtitle">Gerencie os níveis de experiência da equipe de tatuadores</p>
+      </div>
+
+      <!-- Card do Formulário de Cadastro / Edição -->
+      <section class="card">
+        <h2 class="card-title">Nova Senioridade</h2>
+        
+        <form id="form-senioridade" class="form-grid" style="align-items: flex-end;">
+          <div class="form-group col-span-4">
+            <label for="nome" class="form-label">Nome da Senioridade</label>
+            <input
+              type="text"
+              id="nome"
+              class="form-control"
+              placeholder="Nome (ex: Júnior)"
+              required
+            />
+          </div>
+
+          <div class="form-group col-span-2 form-actions">
+            <button
+              id="btn-submit-senioridade"
+              type="submit"
+              class="btn btn-primary"
+            >
+              Cadastrar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Card da Tabela de Dados -->
+      <section class="card mt-4">
+        <h2 class="card-title">Níveis Cadastrados</h2>
+        
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela">
+              <!-- Renderizado dinamicamente via js/senioridade.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal de Confirmação de Saída -->
+    <div id="modal-sair" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-icon modal-icon-warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </div>
+        <h3 class="modal-title">Deseja realmente sair?</h3>
+        <p class="modal-text">Sua sessão atual será encerrada e você precisará fazer login novamente.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="fecharModalSair()">Cancelar</button>
+          <button type="button" class="btn btn-danger" onclick="confirmarSaida()">Sair do Sistema</button>
         </div>
       </div>
-    </nav>
-    <h1>Senioridade</h1>
+    </div>
 
-    <!-- Formulário para cadastrar nova senioridade -->
-    <form id="form-senioridade" class="row g-2 mt-2 mb-4">
-      <div class="col-md-4">
-        <input
-          type="text"
-          id="nome"
-          class="form-control"
-          placeholder="Nome (ex: Júnior)"
-          required
-        />
+    <!-- Modal de Sucesso de Cadastro -->
+    <div id="modal-sucesso" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-icon modal-icon-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h3 class="modal-title">Senioridade Salva!</h3>
+        <p class="modal-text">Os dados foram registrados com sucesso no sistema.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" onclick="fecharModalSucesso()">Continuar</button>
+        </div>
       </div>
-      <div class="col-md-2">
-        <button
-          id="btn-submit-senioridade"
-          type="submit"
-          class="btn btn-primary w-100"
-        >
-          Cadastrar
-        </button>
-      </div>
-    </form>
+    </div>
 
-    <!-- Tabela onde as senioridades vão aparecer -->
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="corpo-tabela">
-        <!-- as senioridades vão aparecer aqui -->
-      </tbody>
-    </table>
-
+    <!-- Scripts do Sistema -->
+    <script src="js/navbar.js"></script>
+    <script src="js/modais.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/senioridade.js"></script>
   </body>

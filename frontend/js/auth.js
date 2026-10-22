@@ -15,16 +15,15 @@ function protegerPagina() {
 // ─── Faz um fetch normal, mas já anexando o token no cabeçalho ───
 async function fetchAutenticado(url, opcoes = {}) {
   const token = localStorage.getItem('token')
+  const headers = { ...opcoes.headers }
 
-  opcoes.headers = {
-    ...opcoes.headers,           // mantém qualquer header que a chamada já tivesse (tipo Content-Type)
-    'Authorization': `Bearer ${token}`
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const resposta = await fetchAutenticado(url, opcoes)
+  const resposta = await fetch(url, { ...opcoes, headers })
 
   if (resposta.status === 401) {
-    // o token não é mais válido (expirou, ou foi removido) — manda de volta pro login
     localStorage.removeItem('token')
     window.location.href = 'login.html'
   }
