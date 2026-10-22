@@ -46,13 +46,13 @@ formSenioridade.addEventListener('submit', async (e) => {
   const idSenioridade = formSenioridade.dataset.idSenioridade
 
   if (idSenioridade) {
-    await fetch(`${API}/senioridade/${idSenioridade}`, {
+    await fetchAutenticado(`${API}/senioridade/${idSenioridade}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(senioridade)
     })
   } else {
-    await fetch(`${API}/senioridade`, {
+    await fetchAutenticado(`${API}/senioridade`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(senioridade)
@@ -77,6 +77,6 @@ function preencherFormularioEdicao(senioridade) {
 async function deletarSenioridade(id) {
   if (!confirm('Tem certeza que deseja excluir esta senioridade?')) return
 
-  await fetch(`${API}/senioridade/${id}`, { method: 'DELETE' })
+  await fetchAutenticado(`${API}/senioridade/${id}`, { method: 'DELETE' })
   listarSenioridades()
 }
