@@ -5,13 +5,32 @@
 #            tatuador (duas chaves estrangeiras).
 # ============================================================
 
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 from database import conectar
 import os
 
 router = APIRouter()
+
+def formatar_hora(agendamento):
+    total_segundos = int(agendamento["horaagendamento"].total_seconds())
+    horas, resto = divmod(total_segundos, 3600)
+    minutos, segundos = divmod(resto, 60)
+    agendamento["horaagendamento"] = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
+    return agendamento
+
+def enviar_desenho(nome_arquivo):
+    if not nome_arquivo:
+        raise HTTPException(status_code=404, detail="Desenho não encontrado")
+
+    nome_seguro = os.path.basename(nome_arquivo)
+    caminho = os.path.join("uploads", nome_seguro)
+    if not os.path.isfile(caminho):
+        raise HTTPException(status_code=404, detail="Desenho não encontrado")
+
+    return FileResponse(caminho, filename=nome_seguro)
 
 # Modelo de dados — define os campos que o agendamento deve ter
 class Agendamento(BaseModel):
@@ -56,10 +75,7 @@ def listar_agendamentos():
     # o mysql-connector-python devolve colunas TIME como um "timedelta" (tempo decorrido),
     # não como texto — por isso convertemos aqui pra "HH:MM:SS" antes de mandar pro frontend
     for a in agendamentos:
-        total_segundos = int(a["horaagendamento"].total_seconds())
-        horas, resto = divmod(total_segundos, 3600)
-        minutos, segundos = divmod(resto, 60)
-        a["horaagendamento"] = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
+        formatar_hora(a)
 
     return agendamentos
 
@@ -75,12 +91,18 @@ def buscar_agendamento(id: int):
         return {"erro": "Agendamento não encontrado"}
 
     # mesma conversão — sem isso, horaagendamento viria como número de segundos
-    total_segundos = int(agendamento["horaagendamento"].total_seconds())
-    horas, resto = divmod(total_segundos, 3600)
-    minutos, segundos = divmod(resto, 60)
-    agendamento["horaagendamento"] = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
+    return formatar_hora(agendamento)
 
-    return agendamento
+@router.get("/{id}/desenho")
+def baixar_desenho(id: int):
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT desenhoaprovado FROM agendamento WHERE idagendamento = %s", (id,))
+    agendamento = cursor.fetchone()
+    conn.close()
+    if not agendamento:
+        raise HTTPException(status_code=404, detail="Agendamento não encontrado")
+    return enviar_desenho(agendamento["desenhoaprovado"])
 
 # PUT /agendamentos/{id} — atualiza um agendamento existente
 @router.put("/{id}")
@@ -113,7 +135,12 @@ def deletar_agendamento(id: int):
 # POST /agendamentos/{id}/desenho — recebe a imagem do desenho aprovado e associa ao agendamento
 @router.post("/{id}/desenho")
 async def upload_desenho(id: int, arquivo: UploadFile = File(...)):
-    nome_arquivo = f"{id}_{arquivo.filename}"   # o id na frente evita nomes repetidos entre agendamentos
+    nome_original = os.path.basename(arquivo.filename or "")
+    extensao = os.path.splitext(nome_original)[1].lower()
+    if extensao not in (".png", ".jpg", ".jpeg", ".gif", ".webp"):
+        raise HTTPException(status_code=400, detail="Envie uma imagem PNG, JPG, GIF ou WEBP")
+
+    nome_arquivo = f"{id}_{nome_original}"   # o id na frente evita nomes repetidos entre agendamentos
     caminho = os.path.join("uploads", nome_arquivo)
 
     conteudo = await arquivo.read()       # lê o conteúdo do arquivo enviado

@@ -57,7 +57,7 @@ async function listarAgendamentos() {
   agendamentos.forEach(a => {
     // Se existir um desenho salvo, monta uma miniatura; senão, mostra "-"
     const imagemHtml = a.desenhoaprovado
-      ? `<img src="${API}/uploads/${a.desenhoaprovado}" style="max-width: 60px; max-height: 60px;">`
+      ? `<img id="desenho-${a.idagendamento}" alt="Desenho aprovado" style="max-width: 60px; max-height: 60px;">`
       : '-'
 
     corpo.innerHTML += `
@@ -76,6 +76,20 @@ async function listarAgendamentos() {
         </td>
       </tr>`
   })
+
+  for (const agendamento of agendamentos) {
+    if (!agendamento.desenhoaprovado) continue
+
+    const imagem = document.getElementById(`desenho-${agendamento.idagendamento}`)
+    const respostaDesenho = await fetchAutenticado(
+      `${API}/agendamentos/${agendamento.idagendamento}/desenho`
+    )
+    if (respostaDesenho.ok) {
+      imagem.src = URL.createObjectURL(await respostaDesenho.blob())
+    } else {
+      imagem.alt = 'Desenho indisponível'
+    }
+  }
 }
 
 listarAgendamentos()

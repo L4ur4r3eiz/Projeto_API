@@ -14,7 +14,7 @@
     <!-- CSS Global do Projeto -->
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="auth-bento-body">
+  <body class="auth-bento-body" data-perfis-permitidos="admin">
 
     <!-- Ambient Glow Background -->
     <div class="auth-ambient-glow"></div>
@@ -31,8 +31,8 @@
           </svg>
         </div>
 
-        <h1 class="auth-bento-title">Criar Conta</h1>
-        <p class="auth-bento-subtitle">Cadastre-se para gerenciar o estúdio</p>
+        <h1 class="auth-bento-title">Cadastrar Funcionário</h1>
+        <p class="auth-bento-subtitle">Cadastre um novo usuário da equipe</p>
 
         <!-- Formulário de Cadastro com IDs e Funcionalidades Mantidas -->
         <form id="form-cadastro" class="auth-form-clean">
@@ -92,6 +92,7 @@
     </main>
 
     <!-- Scripts de Funcionalidades -->
+    <script src="js/auth.js"></script>
     <script src="js/modais.js"></script>
     <script src="js/cadastro.js"></script>
   </body>

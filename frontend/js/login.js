@@ -18,8 +18,9 @@ formLogin.addEventListener('submit', async (e) => {
 
     const resultado = await resposta.json()
 
-    if (resposta.ok && resultado.access_token) {
+    if (resposta.ok && resultado.access_token && ['admin', 'funcionario'].includes(resultado.tipo)) {
       localStorage.setItem('token', resultado.access_token)
+      localStorage.setItem('tipo', resultado.tipo)
       window.location.href = 'dashboard.html'
     } else {
       alert('Erro ao entrar: ' + (resultado.detail || resultado.erro || 'Resposta inválida da API'))

@@ -43,6 +43,9 @@ def login(dados: Login):
         # repare que a mensagem é igual, tanto pra "e-mail não existe" quanto pra "senha errada" —
         # de propósito, pra não dar pista de qual das duas coisas a pessoa errou
 
+    if usuario["tipo"] not in ("admin", "funcionario"):
+        raise HTTPException(status_code=403, detail="Perfil de acesso não habilitado")
+
     # monta o "conteúdo" do crachá: quem é, qual o tipo de acesso, e até quando vale
     expira_em = datetime.now(timezone.utc) + timedelta(hours=2)
     payload = {
@@ -54,4 +57,4 @@ def login(dados: Login):
     # gera o token, assinado com a nossa chave secreta
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITMO)
 
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "tipo": usuario["tipo"]}

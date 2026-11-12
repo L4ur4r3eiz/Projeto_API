@@ -32,3 +32,8 @@ def verificar_admin(payload: dict = Depends(verificar_token)):
     if payload.get("tipo") != "admin":
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
     return payload
+
+def verificar_funcionario(payload: dict = Depends(verificar_token)):
+    if payload.get("tipo") not in ("admin", "funcionario"):
+        raise HTTPException(status_code=403, detail="Acesso restrito à equipe do estúdio")
+    return payload
